@@ -13,7 +13,7 @@ public class PiDriverITTest {
 
     private PiDriver getPiDriverTest() throws ClassNotFoundException {
         //TODO change this informations to your PI configuration.
-        return new PiDriver("localhost", "localhost",  "user", "password");
+        return new PiDriver("localhost", "10.0.0.105",  "pidemo", "");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class PiDriverITTest {
 
     @Test
     public void writevaluesTest() throws ClassNotFoundException, SQLException {
-        String tag = "SINUS*";
+        String tag = "SINUSOID";
         String description = "";
         Date timestamp = Date.valueOf("2020-01-02");
         String value = "10.0";
