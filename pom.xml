@@ -20,6 +20,14 @@
             <version>1.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.78</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -37,6 +45,12 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <version>3.0.0-M4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -57,7 +71,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>br.ufrn.imd.lii.pidriver.PiDriver</mainClass>
+                            <mainClass>br.ufrn.imd.lii.pidriver.dao.jdbc.PiDriver</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

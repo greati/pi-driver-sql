@@ -1,4 +1,6 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.model;
+
+import br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs;
 
 /**
  * Created by Tiago on 20/02/2017.
@@ -13,6 +15,15 @@ public class PiItemValue {
     private String status;
     private String pointtype;
     private String pointtypex;
+
+    public PiItemValue(String tag, String time, String value, String status, String pointtype, String pointtypex) {
+        this.tag = tag;
+        this.time = time;
+        this.value = value;
+        this.status = status;
+        this.pointtype = pointtype;
+        this.pointtypex = pointtypex;
+    }
 
     private boolean isNullValue;
 
@@ -74,7 +85,7 @@ public class PiItemValue {
 
     @Override
     public String toString() {
-        return "br.ufrn.imd.lii.pidriver.PiItemValue{" +
+        return "br.ufrn.imd.lii.pidriver.model.PiItemValue{" +
                 "tag='" + tag + '\'' +
                 ", value='" + value + '\'' +
                 '}';
@@ -103,7 +114,7 @@ public class PiItemValue {
     }
 
     /**
-     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.PiItemValue
+     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.model.PiItemValue
      *
      * @param opt A opcao de origem do ItemValue, util para especificar a tabela a ser utilizada na query
      * @return String com as colunas desejadas.

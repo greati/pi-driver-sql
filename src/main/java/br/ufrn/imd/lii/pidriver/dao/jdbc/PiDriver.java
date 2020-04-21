@@ -1,7 +1,9 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.dao.jdbc;
+
+import br.ufrn.imd.lii.pidriver.util.PIUtil;
+import br.ufrn.imd.lii.pidriver.sql.PiQuery;
 
 import java.sql.*;
-import java.util.Arrays;
 
 public class PiDriver {
 

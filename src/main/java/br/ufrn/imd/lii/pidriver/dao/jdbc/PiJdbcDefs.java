@@ -1,4 +1,4 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.dao.jdbc;
 
 /**
  * Classe responsavel por oferecer um catalogo com todas as definicoes relacionadas ao driver PI JDBC

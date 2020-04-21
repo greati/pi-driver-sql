@@ -1,4 +1,4 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.dao.jdbc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,11 +59,11 @@ public class PiJdbcUrl {
     }
 
     /**
-     * Gera uma instancia default de br.ufrn.imd.lii.pidriver.PiJdbcUrl com DasHost e PiHost repassados.
+     * Gera uma instancia default de br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl com DasHost e PiHost repassados.
      * Timeout definido como default.
      * @param dasHost DAS Host
      * @param piHost PI Host
-     * @return instancia de br.ufrn.imd.lii.pidriver.PiJdbcUrl
+     * @return instancia de br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl
      */
     public static PiJdbcUrl getDefaultPiJdbcUrl(String dasHost, String piHost) {
         PiJdbcUrl retorno = new PiJdbcUrl(dasHost, piHost);
@@ -72,23 +72,23 @@ public class PiJdbcUrl {
     }
 
     /**
-     * Gera uma instancia default de br.ufrn.imd.lii.pidriver.PiJdbcUrl. O DasHost e PiHost sao definidos com base nas propriedades default.
+     * Gera uma instancia default de br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl. O DasHost e PiHost sao definidos com base nas propriedades default.
      * Timeout definido como default.
-     * @return instancia de br.ufrn.imd.lii.pidriver.PiJdbcUrl
+     * @return instancia de br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl
      */
     public static PiJdbcUrl getDefaultPiJdbcUrl() {
         return PiJdbcUrl.getDefaultPiJdbcUrl(DEFAULT_URL_DAS_HOST, DEFAULT_URL_PI_HOST);
     }
 
     /**
-     * Gera uma instancia do br.ufrn.imd.lii.pidriver.PiJdbcUrl padrao utilizada para o PI Archive
+     * Gera uma instancia do br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl padrao utilizada para o PI Archive
      * @param dasHost Host DAS
      * @param piHost Host PI
      * @param isPiLogin Verdadeiro se ha login no PI
      * @param piUser Usuario PI
      * @param piPassword Senha PI
      * @param useTrustedConnection Se ha necessidade de usar trustedConnection
-     * @return Instancia de br.ufrn.imd.lii.pidriver.PiJdbcUrl
+     * @return Instancia de br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcUrl
      */
     public static PiJdbcUrl getUrl(String dasHost, String piHost, boolean isPiLogin, String piUser, String piPassword, boolean useTrustedConnection) {
         PiJdbcUrl url = PiJdbcUrl.getDefaultPiJdbcUrl(dasHost, piHost);

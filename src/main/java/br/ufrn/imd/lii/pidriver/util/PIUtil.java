@@ -1,4 +1,4 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.util;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -44,7 +44,7 @@ public class PIUtil {
         return retorno;
     }
 
-    static void printResultSet(ResultSet rs) throws SQLException {
+    public static void printResultSet(ResultSet rs) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
         while (rs.next()) {

@@ -1,4 +1,6 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.model;
+
+import br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs;
 
 /**
  * Classe entidade que representa cada item do PI Archive
@@ -74,7 +76,7 @@ public class PiItem {
 
     @Override
     public String toString() {
-        return "br.ufrn.imd.lii.pidriver.PiItem{" +
+        return "br.ufrn.imd.lii.pidriver.model.PiItem{" +
                 "tag='" + tag + '\'' +
                 '}';
     }
@@ -104,7 +106,7 @@ public class PiItem {
     }
 
     /**
-     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.PiItem
+     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.model.PiItem
      * @return String com as colunas desejadas.
      */
     public static String query() {

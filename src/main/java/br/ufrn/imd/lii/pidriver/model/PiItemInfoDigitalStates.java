@@ -1,4 +1,6 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.model;
+
+import br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs;
 
 /**
  * Classe entidade que representa os estados digitais de item do PI Archive
@@ -38,7 +40,7 @@ public class PiItemInfoDigitalStates {
 
     @Override
     public String toString() {
-        return "br.ufrn.imd.lii.pidriver.PiItemInfoDigitalStates{" +
+        return "br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates{" +
                 "digitalset='" + digitalset + '\'' +
                 ", name='" + name + '\'' +
                 '}';
@@ -63,7 +65,7 @@ public class PiItemInfoDigitalStates {
     }
 
     /**
-     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.PiItemInfoDigitalStates
+     * Retorna os parametros que devem ser solicitados na query SQL para o br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates
      *
      * @return String com as colunas desejadas.
      */

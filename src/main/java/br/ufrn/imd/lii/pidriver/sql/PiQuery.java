@@ -1,5 +1,11 @@
-package br.ufrn.imd.lii.pidriver;
+package br.ufrn.imd.lii.pidriver.sql;
 
+import br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs;
+import br.ufrn.imd.lii.pidriver.model.PiItem;
+import br.ufrn.imd.lii.pidriver.model.PiItemInfo;
+import br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates;
+import br.ufrn.imd.lii.pidriver.model.PiItemValue;
+import br.ufrn.imd.lii.pidriver.util.PIUtil;
 import javafx.util.Pair;
 
 import java.util.Arrays;
@@ -9,40 +15,35 @@ import java.util.Optional;
 
 public class PiQuery {
 
-    private static String SQL_SELECT_DECLARACAO = "SELECT";
-    private static String SQL_FROM_DECLARACAO = "FROM";
-    private static String SQL_WHERE_DECLARACAO = "WHERE";
-    private static String SQL_AND_DECLARACAO = "AND";
-    private static String SQL_OR_DECLARACAO = "OR";
-    private static String SQL_IGUAL_OPERADOR = "=";
-    private static String SQL_MENOR_OPERADOR = "<";
-    private static String SQL_MENOR_IGUAL_OPERADOR = "<=";
-    private static String SQL_MAIOR_OPERADOR = ">";
-    private static String SQL_MAIOR_IGUAL_OPERADOR = ">=";
-    private static String SQL_LIKE_DECLARACAO = "LIKE";
-    private static String SQL_IN_DECLARACAO = "IN";
-    private static String SQL_ESPACO = " ";
-    private static String SQL_VIRGULA = ",";
-    private static String SQL_PONTO_VIRGULA = ";";
-    private static String SQL_ASPAS = "'";
-    private static String SQL_PARENTESES_INICIO = "(";
-    private static String SQL_PARENTESES_FIM = ")";
-    private static String SQL_TOP_DECLARACAO = "TOP";
-    private static String SQL_BETWEEN_DECLARACAO = "BETWEEN";
-    private static String SQL_INSERT_DECLARACAO = "INSERT";
-    private static String SQL_VALUES_DECLARACAO = "VALUES";
-    private static String SQL_DIGCODE = "DIGCODE";
+    public static String SQL_SELECT_DECLARACAO = "SELECT";
+    public static String SQL_FROM_DECLARACAO = "FROM";
+    public static String SQL_WHERE_DECLARACAO = "WHERE";
+    public static String SQL_AND_DECLARACAO = "AND";
+    public static String SQL_OR_DECLARACAO = "OR";
+    public static String SQL_IGUAL_OPERADOR = "=";
+    public static String SQL_MENOR_OPERADOR = "<";
+    public static String SQL_MENOR_IGUAL_OPERADOR = "<=";
+    public static String SQL_MAIOR_OPERADOR = ">";
+    public static String SQL_MAIOR_IGUAL_OPERADOR = ">=";
+    public static String SQL_LIKE_DECLARACAO = "LIKE";
+    public static String SQL_IN_DECLARACAO = "IN";
+    public static String SQL_ESPACO = " ";
+    public static String SQL_VIRGULA = ",";
+    public static String SQL_PONTO_VIRGULA = ";";
+    public static String SQL_ASPAS = "'";
+    public static String SQL_PARENTESES_INICIO = "(";
+    public static String SQL_PARENTESES_FIM = ")";
+    public static String SQL_TOP_DECLARACAO = "TOP";
+    public static String SQL_BETWEEN_DECLARACAO = "BETWEEN";
+    public static String SQL_INSERT_DECLARACAO = "INSERT";
+    public static String SQL_VALUES_DECLARACAO = "VALUES";
+    public static String SQL_DIGCODE = "DIGCODE";
 
-    public enum IntervalClosing {
-        LEFT,
-        RIGHT,
-        BOTH
-    }
 
     /**
      * Retorna a query utilizada para o metodo SearchItemsQuery.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItem.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.POINT2_TABLE_NAME WHERE tag LIKE 'tag' AND (descriptor LIKE 'description' OR descriptor LIKE '');
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItem.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.POINT2_TABLE_NAME WHERE tag LIKE 'tag' AND (descriptor LIKE 'description' OR descriptor LIKE '');
      *
      * @param tag         nome do item
      * @param description descricao
@@ -74,7 +75,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getTagInfo.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItemInfo.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.POINT2_TABLE_NAME WHERE tag = 'tag';
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItemInfo.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.POINT2_TABLE_NAME WHERE tag = 'tag';
      *
      * @param tag Nome do item
      * @return A query de execucao
@@ -97,7 +98,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getDigitalState.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItemInfoDigitalStates.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIDS_TABLE_NAME WHERE digitalset = 'digitalset';
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIDS_TABLE_NAME WHERE digitalset = 'digitalset';
      *
      * @param digitalset Nome do grupo digital
      * @return A query de execucao
@@ -119,7 +120,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getSnapshots.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PISNAPSHOT_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE pisnapshot.tag=pipoint2.tag AND tag IN (tags);
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PISNAPSHOT_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE pisnapshot.tag=pipoint2.tag AND tag IN (tags);
      *
      * @param tag Tag a ser buscado último valor
      * @return A query de execucao
@@ -132,7 +133,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getSnapshots.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PISNAPSHOT_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE pisnapshot.tag=pipoint2.tag AND tag IN (tags);
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PISNAPSHOT_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE pisnapshot.tag=pipoint2.tag AND tag IN (tags);
      *
      * @param tags Lista de tags na query
      * @return A query de execucao
@@ -167,7 +168,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getHistoricalValues.
      * <p>
-     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
      *
      * @param tag      Nome do tag
      * @param initDate  Data de inicio
@@ -182,7 +183,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getHistoricalValues.
      * <p>
-     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
      *
      * @param tag      Nome do tag
      * @param initDate  Data de inicio
@@ -209,7 +210,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getHistoricalValues.
      * <p>
-     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
      *
      * @param tag      Nome do tag
      * @param initDate  Data de inicio
@@ -281,7 +282,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getHistoricalInterpolatedValues.
      * <p>
-     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIINTERP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE piinterp2.tag=pipoint2.tag AND piinterp2.tag='tags' AND piinterp2.time BETWEEN 'initDate' AND 'finalDate' AND piinterp2.timestep= 'timestep';
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.model.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIINTERP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE piinterp2.tag=pipoint2.tag AND piinterp2.tag='tags' AND piinterp2.time BETWEEN 'initDate' AND 'finalDate' AND piinterp2.timestep= 'timestep';
      *
      * @param name      Nome do tag
      * @param initDate  Data de inicio
@@ -352,7 +353,7 @@ public class PiQuery {
     /**
      * Retorna a query utilizada para o metodo getDigitalStateFromCode.
      * <p>
-     * Padrao: SELECT br.ufrn.imd.lii.pidriver.PiItemInfoDigitalStates.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIDS_TABLE_NAME WHERE code = code;
+     * Padrao: SELECT br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates.query FROM br.ufrn.imd.lii.pidriver.dao.jdbc.PiJdbcDefs.PIDS_TABLE_NAME WHERE code = code;
      *
      * @param code
      * @return

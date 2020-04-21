@@ -1,12 +1,14 @@
 package br.ufrn.imd.lii.pidriver;
 
+import br.ufrn.imd.lii.pidriver.dao.jdbc.PiDriver;
+import br.ufrn.imd.lii.pidriver.sql.PiQuery;
+import br.ufrn.imd.lii.pidriver.util.PIUtil;
 import javafx.util.Pair;
 import org.junit.Test;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
