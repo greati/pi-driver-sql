@@ -56,4 +56,12 @@ public class CliDefs {
     public static final String LONG_OPT_CLOSED_MXV = "--closed-max-value";
     public static final String OPT_DESC_CLOSED_MXV = "Search considering the maximum value";
 
+    public static final String SHORT_OPT_OUTPUT_FORMAT = "-o";
+    public static final String LONG_OPT_OUTPUT_FORMAT = "--output";
+    public static final String OPT_DESC_OUTPUT_FORMAT = "Output format of the result";
+
+    public static final String SHORT_OPT_OUTPUT_PATH = "-p";
+    public static final String LONG_OPT_OUTPUT_PATH = "--out-path";
+    public static final String OPT_DESC_OUTPUT_PATH = "Path to output the results";
+
 }

@@ -2,18 +2,47 @@ package br.ufrn.imd.lii.pidriver.cli;
 
 import br.ufrn.imd.lii.pidriver.dao.PiItemValueDAO;
 import br.ufrn.imd.lii.pidriver.dao.jdbc.JDBCPiItemValueDAO;
-import br.ufrn.imd.lii.pidriver.dao.jdbc.PiDriver;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.Parameters;
+import br.ufrn.imd.lii.pidriver.format.csv.CsvPiValueWriter;
+import br.ufrn.imd.lii.pidriver.model.PiItemValue;
+import br.ufrn.imd.lii.pidriver.util.FileUtil;
+import br.ufrn.imd.lii.pidriver.util.JavaUtil;
+import com.beust.jcommander.*;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PiDriverCliJCommander {
+
+    public class OutputFormatConverter implements IStringConverter<OutputFormat> {
+        @Override
+        public OutputFormat convert(String value) {
+            switch(value) {
+                case "csv":
+                    return OutputFormat.CSV;
+                default:
+                    return OutputFormat.CSV;
+            }
+        }
+    }
+
+    public static class OutputFormatValidator implements IParameterValidator {
+        public void validate(String name, String value) throws ParameterException {
+            Set<String> possibleOutputFormats = Arrays.stream(JavaUtil.getNames(OutputFormat.class)).map(String::toLowerCase).collect(Collectors.toSet());
+            if (!possibleOutputFormats.contains(value))
+                throw new ParameterException("Allowed output format(s) is(are) " + String.join(", ", possibleOutputFormats));
+        }
+    }
+    public static class FileExistenceValidator implements IParameterValidator {
+        public void validate(String name, String value) throws ParameterException {
+            if (!FileUtil.canWriteInFile(value))
+                throw new ParameterException("You provided an invalid file path");
+        }
+    }
 
     @Parameter(names = {CliDefs.LONG_OPT_PI_HOST, CliDefs.SHORT_OPT_PI_HOST},
             description = CliDefs.OPT_DESC_PI_HOST, required=true, order=0)
@@ -57,6 +86,14 @@ public class PiDriverCliJCommander {
 
         @Parameter(order=7, names={CliDefs.LONG_OPT_LIMIT, CliDefs.SHORT_OPT_LIMIT}, description=CliDefs.OPT_DESC_LIMIT)
         private Integer limit;
+
+        @Parameter(order=8, names={CliDefs.LONG_OPT_OUTPUT_FORMAT, CliDefs.SHORT_OPT_OUTPUT_FORMAT}, description=CliDefs.OPT_DESC_OUTPUT_FORMAT,
+        converter = OutputFormatConverter.class, required = false, validateWith = OutputFormatValidator.class)
+        private OutputFormat output = OutputFormat.CSV;
+
+        @Parameter(order=8, names={CliDefs.LONG_OPT_OUTPUT_PATH, CliDefs.SHORT_OPT_OUTPUT_PATH}, description=CliDefs.OPT_DESC_OUTPUT_PATH, required = false,
+        validateWith = FileExistenceValidator.class)
+        private String outputPath;
     }
 
     public SearchValuesCommand searchValCmd = new SearchValuesCommand();
@@ -79,12 +116,25 @@ public class PiDriverCliJCommander {
         return ((compObj != null) ? Optional.of(innerObj) : Optional.empty());
     }
 
+    public void globalValidation(JCommander jc, PiDriverCliJCommander cli) {
+        if (jc.getParsedCommand() != null) {
+            switch(jc.getParsedCommand()) {
+                case CliDefs.SEARCH_VALUES_CMD:
+                    if (cli.searchValCmd.output == OutputFormat.CSV && cli.searchValCmd.outputPath == null)
+                        throw new ParameterException("You must provide an output path");
+                    break;
+            }
+        }
+    }
+
     public void execute(JCommander jc, PiDriverCliJCommander cli) {
+
+        globalValidation(jc, cli);
+
         cli.piPass = adjustPassword(cli.piPass);
 
         if (cli.help) {
-            jc.usage();
-            return;
+            jc.usage(); return;
         }
 
         if (jc.getParsedCommand() == null) {
@@ -99,7 +149,8 @@ public class PiDriverCliJCommander {
                     Optional limit = makeOptional(cli.searchValCmd.limit, cli.searchValCmd.limit);
                     Optional minValue = makeOptional(cli.searchValCmd.minValue, new Pair(cli.searchValCmd.minValue, cli.searchValCmd.minValueClosed));
                     Optional maxValue = makeOptional(cli.searchValCmd.maxValue, new Pair(cli.searchValCmd.maxValue, cli.searchValCmd.maxValueClosed));
-                    dao.search(cli.searchValCmd.tag, initDate, endDate, limit, minValue, maxValue);
+                    List<PiItemValue> items = dao.search(cli.searchValCmd.tag, initDate, endDate, limit, minValue, maxValue);
+                    processItemValueOutput(items, cli.searchValCmd.output, cli.searchValCmd.outputPath);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -110,6 +161,14 @@ public class PiDriverCliJCommander {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void processItemValueOutput(List<PiItemValue> items, OutputFormat output, String path) throws CsvRequiredFieldEmptyException, IOException, CsvDataTypeMismatchException {
+        switch (output) {
+            case CSV:
+                CsvPiValueWriter csvWriter = new CsvPiValueWriter();
+                csvWriter.write(items, path);
         }
     }
 

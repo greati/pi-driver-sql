@@ -64,6 +64,68 @@ public class PiDriverCLIJCommanderTest {
     }
 
     @Test
+    public void inexistentOutputFormat() {
+        String[] args = new String[] {
+                "--pi-host", "10.0.0.106",
+                "--das-host", "localhost",
+                "--pi-user", "pidemo",
+                "--pi-pass", "-",
+                "search-values",
+                "--tag", "SINUSOID",
+                "-o", "wtf",
+                "-p", "/home/inexistentpath/"
+        };
+        try {
+            jc.parse(args);
+            cli.execute(jc, cli);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());
+            jc.usage();
+        }
+    }
+
+    @Test
+    public void csvWithoutPath() {
+        String[] args = new String[] {
+                "--pi-host", "10.0.0.106",
+                "--das-host", "localhost",
+                "--pi-user", "pidemo",
+                "--pi-pass", "-",
+                "search-values",
+                "--tag", "SINUSOID",
+                "-o", "csv",
+        };
+        try {
+            jc.parse(args);
+            cli.execute(jc, cli);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());
+            jc.usage();
+        }
+    }
+
+
+    @Test
+    public void inexistentPathFailTest() {
+        String[] args = new String[] {
+                "--pi-host", "10.0.0.106",
+                "--das-host", "localhost",
+                "--pi-user", "pidemo",
+                "--pi-pass", "-",
+                "search-values",
+                "--tag", "SINUSOID",
+                "-o", "csv",
+                "-p", "/home/inexistentpath/"
+        };
+        try {
+            jc.parse(args);
+            cli.execute(jc, cli);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());jc.usage();
+        }
+    }
+
+    @Test
     public void searchValuesTagOnly() {
         String[] args = new String[] {
                 "--pi-host", "10.0.0.106",
@@ -71,13 +133,16 @@ public class PiDriverCLIJCommanderTest {
                 "--pi-user", "pidemo",
                 "--pi-pass", "-",
                 "search-values",
-                "--tag", "SINUSOID"
+                "--tag", "SINUSOID",
+                "-o", "csv",
+                "-p", "C:\\Users\\Vitor Greati\\Desktop\\TESTPI.csv"
         };
         try {
             jc.parse(args);
             cli.execute(jc, cli);
         } catch (ParameterException e) {
             System.out.println(e.getMessage());
+            jc.usage();
         }
     }
 
@@ -88,13 +153,16 @@ public class PiDriverCLIJCommanderTest {
                 "--das-host", "localhost",
                 "--pi-user", "pidemo",
                 "--pi-pass", "-",
-                "search-values"
+                "search-values",
+                "-o", "csv",
+                "-p", "C:\\Users\\Vitor Greati\\Desktop\\PI.csv"
         };
         try {
             jc.parse(args);
             cli.execute(jc, cli);
         } catch (ParameterException e) {
             System.out.println(e.getMessage());
+            jc.usage();
         }
     }
 
@@ -112,12 +180,15 @@ public class PiDriverCLIJCommanderTest {
                 "--min-value", "50.5",
                 "--max-value", "120.0",
                 "--limit", "100",
+                "-o", "csv",
+                "-p", "C:\\Users\\Vitor Greati\\Desktop\\PI.csv"
         };
         try {
             jc.parse(args);
             cli.execute(jc, cli);
         } catch (ParameterException e) {
             System.out.println(e.getMessage());
+            jc.usage();
         }
     }
 

@@ -21,6 +21,7 @@ Além disso, verifique se o path do PI DAS está definido nas seguintes variáve
 
 # pi-cli
 ```
+The following options are required: [--pi-pass | -p], [--pi-host | -pih], [--pi-user | -u], [--das-host | -dash]
 Usage: <main class> [options] [command] [command options]
   Options:
   * --pi-host, -pih
@@ -55,5 +56,11 @@ Usage: <main class> [options] [command] [command options]
             Default: false
           --limit, -l
             Maximum number of results to collect
+          --output, -o
+            Output format of the result
+            Default: CSV
+            Possible Values: [CSV]
+          --out-path, -p
+            Path to output the results
 ```
 
