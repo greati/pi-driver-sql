@@ -1,8 +1,11 @@
 package br.ufrn.imd.lii.pidriver;
 
+import javafx.util.Pair;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class PiQuery {
 
@@ -12,6 +15,10 @@ public class PiQuery {
     private static String SQL_AND_DECLARACAO = "AND";
     private static String SQL_OR_DECLARACAO = "OR";
     private static String SQL_IGUAL_OPERADOR = "=";
+    private static String SQL_MENOR_OPERADOR = "<";
+    private static String SQL_MENOR_IGUAL_OPERADOR = "<=";
+    private static String SQL_MAIOR_OPERADOR = ">";
+    private static String SQL_MAIOR_IGUAL_OPERADOR = ">=";
     private static String SQL_LIKE_DECLARACAO = "LIKE";
     private static String SQL_IN_DECLARACAO = "IN";
     private static String SQL_ESPACO = " ";
@@ -25,6 +32,12 @@ public class PiQuery {
     private static String SQL_INSERT_DECLARACAO = "INSERT";
     private static String SQL_VALUES_DECLARACAO = "VALUES";
     private static String SQL_DIGCODE = "DIGCODE";
+
+    public enum IntervalClosing {
+        LEFT,
+        RIGHT,
+        BOTH
+    }
 
     /**
      * Retorna a query utilizada para o metodo SearchItemsQuery.
@@ -163,9 +176,57 @@ public class PiQuery {
      * @return A query de execucao
      */
     public static String historicalValuesQuery(String tag, Date initDate, Date finalDate, int nPoints) {
+        return  historicalValuesQuery(tag, initDate,  finalDate, nPoints, Optional.empty(), Optional.empty());
+    }
+
+    /**
+     * Retorna a query utilizada para o metodo getHistoricalValues.
+     * <p>
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
+     *
+     * @param tag      Nome do tag
+     * @param initDate  Data de inicio
+     * @param finalDate Data final
+     * @param nPoints   numero de pontos
+     * @return A query de execucao
+     */
+    public static String historicalValuesQuery(String tag,
+                                               Date initDate,
+                                               Date finalDate,
+                                               int nPoints,
+                                               Optional<Pair<Float, Boolean>> minValue,
+                                               Optional<Pair<Float, Boolean>> maxValue) {
+        return valuesQuery(
+                tag,
+                Optional.of(new Pair(initDate, true)),
+                Optional.of(new Pair(finalDate, true)),
+                Optional.of(nPoints),
+                minValue,
+                maxValue
+        );
+    }
+
+    /**
+     * Retorna a query utilizada para o metodo getHistoricalValues.
+     * <p>
+     * Padrao: SELECT TOP nPoint br.ufrn.imd.lii.pidriver.PiItemValue.query FROM br.ufrn.imd.lii.pidriver.PiJdbcDefs.PICOMP2_TABLE_NAME,br.ufrn.imd.lii.pidriver.PiJdbcDefs.PIPOINTS2_TABLE_NAME WHERE picomp2.tag=pipoint2.tag AND picomp2.tag='tags' AND picomp2.time BETWEEN 'initDate' AND 'finalDate';
+     *
+     * @param tag      Nome do tag
+     * @param initDate  Data de inicio
+     * @param finalDate Data final
+     * @param nPoints   numero de pontos
+     * @return A query de execucao
+     */
+    public static String valuesQuery(String tag,
+                                     Optional<Pair<Date, Boolean>> initDate,
+                                     Optional<Pair<Date, Boolean>> finalDate,
+                                     Optional<Integer> nPoints,
+                                     Optional<Pair<Float, Boolean>> minValue,
+                                     Optional<Pair<Float, Boolean>> maxValue) {
         StringBuilder builder = new StringBuilder();
         builder.append(SQL_SELECT_DECLARACAO).append(SQL_ESPACO);
-        builder.append(SQL_TOP_DECLARACAO).append(SQL_ESPACO).append(nPoints).append(SQL_ESPACO);
+        if (nPoints.isPresent())
+            builder.append(SQL_TOP_DECLARACAO).append(SQL_ESPACO).append(nPoints.get()).append(SQL_ESPACO);
         builder.append(PiItemValue.query(PiItemValue.ItemValueSource.PI_SOURCE_COMP)).append(SQL_ESPACO);
         builder.append(SQL_FROM_DECLARACAO).append(SQL_ESPACO);
         builder.append(PiJdbcDefs.PI_JDBC_TABLE_NAME_PICOMP2).append(SQL_VIRGULA);
@@ -178,12 +239,41 @@ public class PiQuery {
         builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TAG).append(SQL_ESPACO);
         builder.append(SQL_IGUAL_OPERADOR).append(SQL_ESPACO).append(SQL_ASPAS);
         builder.append(tag).append(SQL_ASPAS).append(SQL_ESPACO);
-        builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
-        builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
-        builder.append(SQL_BETWEEN_DECLARACAO).append(SQL_ESPACO);
-        builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(initDate)).append(SQL_ASPAS).append(SQL_ESPACO);
-        builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
-        builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(finalDate)).append(SQL_ASPAS);
+
+        if (initDate.isPresent()) {
+            builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+            builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
+            String op = initDate.get().getValue() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
+            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(initDate.get().getKey()))).append(SQL_ASPAS).append(SQL_ESPACO);
+        }
+
+        if (finalDate.isPresent()) {
+            builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+            builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
+            String op = finalDate.get().getValue() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
+            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(finalDate.get().getKey()))).append(SQL_ASPAS).append(SQL_ESPACO);
+        }
+
+        //builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+        //builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
+        //builder.append(SQL_BETWEEN_DECLARACAO).append(SQL_ESPACO);
+        //builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(initDate)).append(SQL_ASPAS).append(SQL_ESPACO);
+        //builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+        //builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(finalDate)).append(SQL_ASPAS);
+
+        builder.append(SQL_ESPACO);
+        if (minValue.isPresent()) {
+            builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+            builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_VALUE);
+            String op = minValue.get().getValue() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
+            builder.append(op).append(minValue.get().getKey()).append(SQL_ESPACO);
+        }
+        if (maxValue.isPresent()) {
+            builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
+            builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_VALUE);
+            String op = maxValue.get().getValue() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
+            builder.append(op).append(maxValue.get().getKey()).append(SQL_ESPACO);
+        }
         builder.append(SQL_PONTO_VIRGULA);
         return builder.toString();
     }

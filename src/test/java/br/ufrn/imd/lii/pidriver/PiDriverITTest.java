@@ -1,11 +1,13 @@
 package br.ufrn.imd.lii.pidriver;
 
+import javafx.util.Pair;
 import org.junit.Test;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +15,7 @@ public class PiDriverITTest {
 
     private PiDriver getPiDriverTest() throws ClassNotFoundException {
         //TODO change this informations to your PI configuration.
-        return new PiDriver("localhost", "10.0.0.105",  "pidemo", "");
+        return new PiDriver("localhost", "10.0.0.106",  "pidemo", "");
     }
 
     @Test
@@ -31,7 +33,26 @@ public class PiDriverITTest {
         Date finalDate = Date.valueOf("2020-01-02");
         //max points
         int points = 100;
-        ResultSet resultSet = getPiDriverTest().executarQuery(PiQuery.historicalValuesQuery(tag, initialDate, finalDate, points));
+        String query = PiQuery.historicalValuesQuery(tag, initialDate, finalDate, points);
+        System.out.println(query);
+        ResultSet resultSet = getPiDriverTest().executarQuery(query);
+        PIUtil.printResultSet(resultSet);
+        assertNotNull("The result can`t be null", resultSet);
+    }
+
+    @Test
+    public void historicalWithMinValueTest() throws ClassNotFoundException, SQLException {
+        String tag = "SINUSOID";
+        //format yyyy-mm-dd
+        Date initialDate = Date.valueOf("2020-01-01");
+        Date finalDate = Date.valueOf("2020-01-02");
+        //max points
+        int points = 100;
+        String query = PiQuery.historicalValuesQuery(tag, initialDate, finalDate, points,
+                Optional.of(new Pair<Float,Boolean>(40.0f, false)),
+                Optional.of(new Pair<Float,Boolean>(120.0f, true)));
+        System.out.println(query);
+        ResultSet resultSet = getPiDriverTest().executarQuery(query);
         PIUtil.printResultSet(resultSet);
         assertNotNull("The result can`t be null", resultSet);
     }
