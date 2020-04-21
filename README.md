@@ -19,18 +19,40 @@ mvn install:install-file \
 
 Além disso, verifique se o path do PI DAS está definido nas seguintes variáveis de ambiente: PI_RDSA_LIB64 e PI_RDSA_LIB
 
-# Como usar
+# pi-cli
+Usage: <main class> [options] [command] [command options]
+  Options:
+  * --pi-host, -pih
+      PI host
+  * --das-host, -dash
+      PI DAS host
+  * --pi-user, -u
+      PI user
+  * --pi-pass, -p
+      PI password
+    --help
+      Display command help
+  Commands:
+    search-values      Search for values in PI
+      Usage: search-values [options]
+        Options:
+        * --tag, -t
+            Tag to search for
+          --from, -dtf
+            Date to search from
+          --to, -dtt
+            Date to search to
+          --min-value, -mnv
+            Minimum value to search
+          --closed-min-value, -cmnv
+            Search considering the minimum value
+            Default: false
+          --max-value, -mxv
+            Maximum value to search
+          --closed-max-value, -cmxv
+            Search considering the maximum value
+            Default: false
+          --limit, -l
+            Maximum number of results to collect
 
-Exemplo de uso:
 
-```java
-    String tag = "SINUSOID";
-    String hostDas = "localhost"; // host onde o DAS foi instalado
-    String hostPi = "localhost"; //Host do servidor do PI
-    String user = "pidemo"; // Usuário de acesso ao PI
-    String password = ""; // Senha de acesso ao PI
-    PiDriver driver = new PiDriver(hostDas, hostPi,  user, password);
-    ResultSet resultSet = driver.executarQuery(PiQuery.snapshotQuery(tag));
-``` 
-
-Para mais exemplos, localize a classe PiDriverITTest. Você pode alterar os valores de conexão com o PI e utilizar os testes para testar os métodos disponíveis.
