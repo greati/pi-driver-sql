@@ -20,6 +20,7 @@ mvn install:install-file \
 Além disso, verifique se o path do PI DAS está definido nas seguintes variáveis de ambiente: PI_RDSA_LIB64 e PI_RDSA_LIB
 
 # pi-cli
+```
 Usage: <main class> [options] [command] [command options]
   Options:
   * --pi-host, -pih
@@ -54,5 +55,5 @@ Usage: <main class> [options] [command] [command options]
             Default: false
           --limit, -l
             Maximum number of results to collect
-
+```
 
