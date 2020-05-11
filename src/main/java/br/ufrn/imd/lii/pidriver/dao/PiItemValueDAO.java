@@ -33,4 +33,19 @@ public interface PiItemValueDAO extends AutoCloseable {
                              Optional<Pair<Float, Boolean>> minValue,
                              Optional<Pair<Float, Boolean>> maxValue)  throws DataAccessException;
 
+    /**
+     * Insert an item in PI.
+     *
+     * @param itemValue
+     * @throws DataAccessException
+     */
+    void insert(PiItemValue itemValue) throws DataAccessException;
+
+    /**
+     * Insert list of items in PI.
+     *
+     * @param itemsValues
+     * @throws DataAccessException
+     */
+    void insert(List<PiItemValue> itemValue) throws DataAccessException;
 }

@@ -53,6 +53,33 @@ public class JDBCPiItemValueDAO implements PiItemValueDAO {
     }
 
     @Override
+    public void insert(PiItemValue itemValue) throws DataAccessException {
+        String query = PiQuery.writeValueQuery(itemValue.getTag(),
+                java.sql.Date.valueOf(itemValue.getTime()), itemValue.getValue());
+        System.out.println(query);
+        try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
+            pStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException();
+        }
+    }
+
+    @Override
+    public void insert(List<PiItemValue> itemValues) throws DataAccessException {
+        if (itemValues.isEmpty())
+            return;
+        String query = PiQuery.writeMultipleValuesQuery(itemValues);
+        System.out.println(query);
+        try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
+            pStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException();
+        }
+    }
+
+    @Override
     public void close() throws Exception {
         if (connection != null)
             connection.close();

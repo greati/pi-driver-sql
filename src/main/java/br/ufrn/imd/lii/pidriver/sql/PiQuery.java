@@ -37,6 +37,7 @@ public class PiQuery {
     public static String SQL_BETWEEN_DECLARACAO = "BETWEEN";
     public static String SQL_INSERT_DECLARACAO = "INSERT";
     public static String SQL_VALUES_DECLARACAO = "VALUES";
+    public static String SQL_UNION_DECLARACAO = "UNION";
     public static String SQL_DIGCODE = "DIGCODE";
 
 
@@ -255,13 +256,6 @@ public class PiQuery {
             builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(finalDate.get().getKey()))).append(SQL_ASPAS).append(SQL_ESPACO);
         }
 
-        //builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
-        //builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
-        //builder.append(SQL_BETWEEN_DECLARACAO).append(SQL_ESPACO);
-        //builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(initDate)).append(SQL_ASPAS).append(SQL_ESPACO);
-        //builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
-        //builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(finalDate)).append(SQL_ASPAS);
-
         builder.append(SQL_ESPACO);
         if (minValue.isPresent()) {
             builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
@@ -347,6 +341,38 @@ public class PiQuery {
         builder.append(SQL_ASPAS).append(value).append(SQL_ASPAS);
         builder.append(SQL_PARENTESES_FIM);
         builder.append(SQL_PONTO_VIRGULA);
+        return builder.toString();
+    }
+
+    /**
+     * Retorna a query utilizada para o metodo writeValue.
+     * <p>
+     * Padrao: INSERT picomp2 (tag,time,value) VALUES ('tag', 'timestamp', 'value');
+     *
+     * @param tag       Nome da tag
+     * @param timestamp Timestamp do evento
+     * @param value     Valor do evento
+     * @return A query de execucao
+     */
+    public static String writeMultipleValuesQuery(List<PiItemValue> items) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(SQL_INSERT_DECLARACAO).append(SQL_ESPACO);
+        builder.append(PiJdbcDefs.PI_JDBC_TABLE_NAME_PICOMP2).append(SQL_ESPACO);
+        builder.append(SQL_PARENTESES_INICIO);
+        builder.append(PiJdbcDefs.PI_JDBC_COL_NAME_PICOMP2_TAG).append(SQL_VIRGULA);
+        builder.append(PiJdbcDefs.PI_JDBC_COL_NAME_PICOMP2_TIME).append(SQL_VIRGULA);
+        builder.append(PiJdbcDefs.PI_JDBC_COL_NAME_PICOMP2_VALUE);
+        builder.append(SQL_PARENTESES_FIM).append(SQL_ESPACO);
+
+        for (int i = 0; i < items.size(); ++i) {
+            PiItemValue item = items.get(i);
+            builder.append(SQL_SELECT_DECLARACAO).append(SQL_ESPACO);
+            builder.append(SQL_ASPAS).append(item.getTag()).append(SQL_ASPAS).append(SQL_VIRGULA);
+            builder.append(SQL_ASPAS).append(item.getTime()).append(SQL_ASPAS).append(SQL_VIRGULA);
+            builder.append(SQL_ASPAS).append(item.getValue()).append(SQL_ASPAS);
+            if (i != items.size() - 1)
+                builder.append(SQL_ESPACO).append(SQL_UNION_DECLARACAO).append(SQL_ESPACO);
+        }
         return builder.toString();
     }
 

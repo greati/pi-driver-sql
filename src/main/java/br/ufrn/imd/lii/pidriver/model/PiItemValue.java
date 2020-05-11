@@ -25,6 +25,13 @@ public class PiItemValue {
         this.pointtypex = pointtypex;
     }
 
+    public PiItemValue(String tag, String time, String value, String status) {
+        this.tag = tag;
+        this.time = time;
+        this.value = value;
+        this.status = status;
+    }
+
     private boolean isNullValue;
 
     public String getTag() {
