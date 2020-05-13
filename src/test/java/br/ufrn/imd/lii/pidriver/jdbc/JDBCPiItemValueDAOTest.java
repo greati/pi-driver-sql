@@ -17,13 +17,14 @@ public class JDBCPiItemValueDAOTest {
 
     @Test
     public void testMultipleWrite() {
-        PiItemValue itemValue1 = new PiItemValue("SINUSOID", "2020-02-03", "37,5", "0");
-        PiItemValue itemValue2 = new PiItemValue("SINUSOID", "2020-02-04", "17,5", "0");
-        PiItemValue itemValue3 = new PiItemValue("SINUSOID", "2020-02-05", "27,5", "0");
-        List<PiItemValue> items = new ArrayList<PiItemValue>();
+        PiItemValue itemValue1 = new PiItemValue("PSVTEST", "2020-02-03 00:00:00.0", "37,5", "0");
+        PiItemValue itemValue2 = new PiItemValue("PSVTEST", "2020-02-04 00:00:00.0", "17,5", "0");
+        PiItemValue itemValue3 = new PiItemValue("PSVTEST", "2020-02-05 00:00:00.0", "27,5", "0");
+        List<PiItemValue> items = new ArrayList<>();
         items.add(itemValue1);
         items.add(itemValue2);
         items.add(itemValue3);
+
         try {
             PiItemValueDAO ivDao = new JDBCPiItemValueDAO("localhost", "192.168.0.18", "pidemo", "");
             ivDao.insert(items);
@@ -39,7 +40,7 @@ public class JDBCPiItemValueDAOTest {
     @Test
     public void testWrite() {
 
-        PiItemValue itemValue = new PiItemValue("SINUSOID", "2020-02-03", "37,5", "0");
+        PiItemValue itemValue = new PiItemValue("PSVTEST", "2019-10-10", "37,5", "0");
         try {
             PiItemValueDAO ivDao = new JDBCPiItemValueDAO("localhost", "192.168.0.18",  "pidemo", "");
             ivDao.insert(itemValue);

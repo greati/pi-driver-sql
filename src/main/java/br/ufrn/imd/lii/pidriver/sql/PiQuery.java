@@ -325,7 +325,7 @@ public class PiQuery {
      * @param value     Valor do evento
      * @return A query de execucao
      */
-    public static String writeValueQuery(String tag, Date timestamp, String value) {
+    public static String writeValueQuery(String tag, String timestamp, String value) {
         StringBuilder builder = new StringBuilder();
         builder.append(SQL_INSERT_DECLARACAO).append(SQL_ESPACO);
         builder.append(PiJdbcDefs.PI_JDBC_TABLE_NAME_PICOMP2).append(SQL_ESPACO);
@@ -337,7 +337,7 @@ public class PiQuery {
         builder.append(SQL_VALUES_DECLARACAO).append(SQL_ESPACO);
         builder.append(SQL_PARENTESES_INICIO);
         builder.append(SQL_ASPAS).append(tag).append(SQL_ASPAS).append(SQL_VIRGULA);
-        builder.append(SQL_ASPAS).append(PIUtil.convertDateToString(timestamp)).append(SQL_ASPAS).append(SQL_VIRGULA);
+        builder.append(SQL_ASPAS).append(timestamp).append(SQL_ASPAS).append(SQL_VIRGULA);
         builder.append(SQL_ASPAS).append(value).append(SQL_ASPAS);
         builder.append(SQL_PARENTESES_FIM);
         builder.append(SQL_PONTO_VIRGULA);
@@ -349,9 +349,7 @@ public class PiQuery {
      * <p>
      * Padrao: INSERT picomp2 (tag,time,value) VALUES ('tag', 'timestamp', 'value');
      *
-     * @param tag       Nome da tag
-     * @param timestamp Timestamp do evento
-     * @param value     Valor do evento
+     * @param items
      * @return A query de execucao
      */
     public static String writeMultipleValuesQuery(List<PiItemValue> items) {

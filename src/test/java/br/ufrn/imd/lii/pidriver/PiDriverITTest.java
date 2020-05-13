@@ -100,10 +100,10 @@ public class PiDriverITTest {
 
     @Test
     public void writevaluesTest() throws ClassNotFoundException, SQLException {
-        String tag = "TESTPIDRIVER";
+        String tag = "PSVTEST";
         String description = "";
-        Date timestamp = Date.valueOf("2020-04-27");
-        String value = "10,0";
+        String timestamp = "2020-04-27 00:00:00";
+        String value = "30,0";
         ResultSet resultSet = getPiDriverTest().executarQuery(PiQuery.writeValueQuery(tag, timestamp, value));
         PIUtil.printResultSet(resultSet);
         assertNotNull("The result can`t be null", resultSet);
