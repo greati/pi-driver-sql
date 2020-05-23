@@ -27,6 +27,7 @@ public class ListUtils {
                                                                                 Function<T, Boolean> predicate) {
         Integer currentIndex = fromIndex + 1;
         List<T> inBetweenItems = new ArrayList<>();
+
         while (currentIndex < items.size() && predicate.apply(items.get(currentIndex))) {
             inBetweenItems.add(items.get(currentIndex));
             ++currentIndex;
@@ -38,18 +39,19 @@ public class ListUtils {
         return Triplet.with(Optional.of(currentIndex), currentIndex - fromIndex, inBetweenItems);
     }
 
-    public static <T> List<Pair<Integer,T>> findMaxItems(List<T> items, BiFunction<T, T, Boolean> comparator) {
+    public static <T> List<Pair<Integer,T>> findMaxItems(List<T> items, BiFunction<T, T, Boolean> comparator,
+                                                         BiFunction<T, T, Boolean> equalsComparator) {
         if (items.isEmpty())
             return Collections.emptyList();
         T maxItem = items.get(0);
-        for (T i : items) {
-            if (comparator.apply(maxItem, i))
-                maxItem = i;
+        for (T item : items) {
+            if (comparator.apply(maxItem, item))
+                maxItem = item;
         }
         List<Pair<Integer,T>> maxItems = new ArrayList<>();
         for (int i = 0; i < items.size(); ++i) {
             T item = items.get(i);
-            if (item.equals(maxItem))
+            if (equalsComparator.apply(item, maxItem))
                 maxItems.add(Pair.with(i, item));
         }
         return maxItems;

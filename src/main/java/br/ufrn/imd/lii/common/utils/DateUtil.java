@@ -8,7 +8,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static Date fromString(String dateStr) throws ParseException {
-        SimpleDateFormat fmt = new SimpleDateFormat("Y-M-d HH:mm:ss");
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return fmt.parse(dateStr);
     }
 

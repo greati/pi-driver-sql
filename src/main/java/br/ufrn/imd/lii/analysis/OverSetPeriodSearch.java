@@ -44,7 +44,8 @@ public class OverSetPeriodSearch {
      */
     public List<Period> searchOverSetPeriods(List<PiItemValue> values,
                                              Double setValue,
-                                             Integer timeStepSeconds) throws ParseException {
+                                             Integer timeStepSeconds,
+                                             Pair<Integer, Integer> extraDeltas) throws ParseException {
 
         Integer currentIndex = 0;
         List<Period> periods = new ArrayList<>();
@@ -62,23 +63,25 @@ public class OverSetPeriodSearch {
 
             // collect all points above the set value, stopping at the first value below the set
             Triplet<Optional<Integer>, Integer, List<PiItemValue>> aboveValues = ListUtils.collectUntil(values, currentIndex,
-                    item -> item.getDoubleValue() >= setValue);
+                    item -> item.getDoubleValue() > setValue);
             // -- if we only keep above the set, we do not count as a period, and break
             if (!aboveValues.getValue0().isPresent())
                 break;
 
+            if (aboveValues.getValue2().isEmpty())
+                continue;
             // we have the period, now we compute the delta steps
             Pair<Integer, Integer> deltaSteps = deltaStepsComputer.computeSteps(
                     aboveValues.getValue2(),
                     belowValues.getValue0().get(),
-                    belowValues.getValue0().get());
+                    aboveValues.getValue0().get());
             // compute period using the delta steps
             //-- original values
             Date startDate = DateUtil.fromString(values.get(belowValues.getValue0().get()).getTime());
             Date endDate = DateUtil.fromString(values.get(aboveValues.getValue0().get()).getTime());
             //-- dates with deltas
-            startDate = DateUtil.subtractSeconds(startDate, deltaSteps.getValue0() * timeStepSeconds);
-            endDate = DateUtil.addSeconds(endDate, deltaSteps.getValue1() * timeStepSeconds);
+            startDate = DateUtil.subtractSeconds(startDate, deltaSteps.getValue0() * timeStepSeconds + extraDeltas.getValue0());
+            endDate = DateUtil.addSeconds(endDate, deltaSteps.getValue1() * timeStepSeconds + extraDeltas.getValue1());
             //-- add period
             periods.add(new Period(startDate, endDate));
             // keep going

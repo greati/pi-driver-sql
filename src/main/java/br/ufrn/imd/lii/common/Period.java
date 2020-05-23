@@ -1,5 +1,6 @@
 package br.ufrn.imd.lii.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -42,5 +43,14 @@ public class Period {
     @Override
     public int hashCode() {
         return Objects.hash(start, end);
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        return "Period{" +
+                "start=" + fmt.format(start) +
+                ", end=" + fmt.format(end) +
+                '}';
     }
 }
