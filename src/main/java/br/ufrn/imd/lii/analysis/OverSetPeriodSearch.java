@@ -21,59 +21,19 @@ import java.util.Optional;
  */
 public class OverSetPeriodSearch {
 
-    public interface DeltaStepsComputer {
-        public Pair<Integer, Integer> computeSteps(Integer leftIndex, Integer rightIndex);
-    }
-
     private DeltaStepsComputer deltaStepsComputer;
 
     public OverSetPeriodSearch(DeltaStepsComputer deltaStepsComputer) {
         this.deltaStepsComputer = deltaStepsComputer;
     }
 
-    public class LinearInterpolationDeltaStepsComputer implements DeltaStepsComputer {
-
-        private List<PiItemValue> inBetweenValues;
-        private List<PiItemValue> allValues;
-        private Double setValue;
-        private Double normalValue;
-
-        public LinearInterpolationDeltaStepsComputer(List<PiItemValue> inBetweenValues, List<PiItemValue> allValues, Double setValue, Double normalValue) {
-            this.inBetweenValues = inBetweenValues;
-            this.allValues = allValues;
-            this.setValue = setValue;
-            this.normalValue = normalValue;
-        }
-
-        @Override
-        public Pair<Integer, Integer> computeSteps(Integer leftIndex, Integer rightIndex) {
-            List<Pair<Integer, PiItemValue>> maxItems = ListUtils.findMaxItems(inBetweenValues, (i1,i2) -> Double.valueOf(i1.getValue()) < Double.valueOf(i2.getValue()));
-            // left part
-            Point2D.Double left = new Point2D.Double(leftIndex, Double.valueOf(allValues.get(leftIndex).getValue()));
-            Point2D.Double maxLeft = new Point2D.Double(maxItems.get(0).getValue0(), Double.valueOf(maxItems.get(0).getValue1().getValue()));
-            Integer leftSteps = getStepsByLinearInterp(left, maxLeft, normalValue);
-            // right part
-            Point2D.Double right = new Point2D.Double(rightIndex, Double.valueOf(allValues.get(rightIndex).getValue()));
-            Point2D.Double maxRight = new Point2D.Double(maxItems.get(maxItems.size() - 1).getValue0(), Double.valueOf(maxItems.get(maxItems.size() - 1).getValue1().getValue()));
-            Integer rightSteps = getStepsByLinearInterp(right, maxRight, normalValue);
-            return Pair.with(leftSteps, rightSteps);
-        }
-
-        private Integer getStepsByLinearInterp(Point2D.Double p0, Point2D.Double p1, Double normalValue) {
-            Point2D.Double coeffs = MathUtils.computeLinearCoefficients(p0, p1);
-            Integer steps = Math.abs(MathUtils.inferXFromLinearCoefficient(coeffs, normalValue).intValue());
-            return steps;
-        }
-    }
-
-
     /**
      * Given a set of PiItemValue and a set value, search
      * all periods (t0,t1) in which they were over the
-     * value. More than that, search for suitables
+     * value. More than that, search for suitable
      * delta1 and delta2 such that (t0-delta1, t1+delta2)
-     * represents the more complete scenario in which the values were
-     * obove the set value.
+     * represents a more complete scenario in which the values were
+     * above the set value.
      *
      *        /---\
      *       /     \
@@ -90,25 +50,29 @@ public class OverSetPeriodSearch {
         List<Period> periods = new ArrayList<>();
         while (currentIndex < values.size()) {
 
+            // search first value above the set
             Triplet<Optional<Integer>, Integer, List<PiItemValue>> belowValues = ListUtils.collectUntil(values, currentIndex,
                     item -> Double.valueOf(item.getValue()) < setValue);
 
+            //-- break if not find
             if (!belowValues.getValue0().isPresent())
                 break;
 
             currentIndex += belowValues.getValue1() + 1;
 
+            // collect all points above the set value, stopping at the first value below the set
             Triplet<Optional<Integer>, Integer, List<PiItemValue>> aboveValues = ListUtils.collectUntil(values, currentIndex,
                     item -> Double.valueOf(item.getValue()) >= setValue);
-
+            // -- if we only keep above the set, we do not count as a period, and break
             if (!aboveValues.getValue0().isPresent())
                 break;
 
-            // compute delta steps
-            Pair<Integer, Integer> deltaSteps = deltaStepsComputer.computeSteps(belowValues.getValue0().get(),
+            // we have the period, now we compute the delta steps
+            Pair<Integer, Integer> deltaSteps = deltaStepsComputer.computeSteps(
+                    aboveValues.getValue2(),
+                    belowValues.getValue0().get(),
                     belowValues.getValue0().get());
-
-            // compute period
+            // compute period using the delta steps
             //-- original values
             Date startDate = DateUtil.fromString(values.get(belowValues.getValue0().get()).getTime());
             Date endDate = DateUtil.fromString(values.get(aboveValues.getValue0().get()).getTime());
