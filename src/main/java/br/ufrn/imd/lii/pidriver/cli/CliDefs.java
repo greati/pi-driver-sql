@@ -3,6 +3,7 @@ package br.ufrn.imd.lii.pidriver.cli;
 public class CliDefs {
 
     public static final String SEARCH_VALUES_CMD = "search-values";
+    public static final String INSERT_VALUES_CMD = "insert-values";
     public static final String HELP_CMD = "help";
 
     public static final String HELP_PARAM = "--help";
@@ -23,6 +24,10 @@ public class CliDefs {
     public static final String SHORT_OPT_PI_PASS = "-p";
     public static final String LONG_OPT_PI_PASS = "--pi-pass";
     public static final String OPT_DESC_PI_PASS = "PI password";
+
+    public static final String SHORT_OPT_FROM_PATH = "-f";
+    public static final String LONG_OPT_FROM_PATH = "--from-path";
+    public static final String OPT_DESC_FROM_PATH = "File path to import data";
 
     public static final String SHORT_OPT_TAG = "-t";
     public static final String LONG_OPT_TAG = "--tag";
@@ -59,6 +64,10 @@ public class CliDefs {
     public static final String SHORT_OPT_OUTPUT_FORMAT = "-o";
     public static final String LONG_OPT_OUTPUT_FORMAT = "--output";
     public static final String OPT_DESC_OUTPUT_FORMAT = "Output format of the result";
+
+    public static final String SHORT_OPT_INPUT_FORMAT = "-i";
+    public static final String LONG_OPT_INPUT_FORMAT = "--format";
+    public static final String OPT_DESC_INPUT_FORMAT = "Input format";
 
     public static final String SHORT_OPT_OUTPUT_PATH = "-p";
     public static final String LONG_OPT_OUTPUT_PATH = "--out-path";

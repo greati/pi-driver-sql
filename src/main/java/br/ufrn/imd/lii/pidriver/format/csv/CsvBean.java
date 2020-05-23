@@ -4,4 +4,5 @@ public abstract class CsvBean<T> {
 
     public abstract void from(T obj);
 
+    public abstract T getBean();
 }

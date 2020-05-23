@@ -19,10 +19,17 @@ public class PiItemValue {
     public PiItemValue(String tag, String time, String value, String status, String pointtype, String pointtypex) {
         this.tag = tag;
         this.time = time;
-        this.value = value;
+        this.value = value.replace('.',',');
         this.status = status;
         this.pointtype = pointtype;
         this.pointtypex = pointtypex;
+    }
+
+    public PiItemValue(String tag, String time, String value, String status) {
+        this.tag = tag;
+        this.time = time;
+        this.value = value;
+        this.status = status;
     }
 
     private boolean isNullValue;
@@ -81,14 +88,6 @@ public class PiItemValue {
 
     public void setNullValue(boolean nullValue) {
         isNullValue = nullValue;
-    }
-
-    @Override
-    public String toString() {
-        return "br.ufrn.imd.lii.pidriver.model.PiItemValue{" +
-                "tag='" + tag + '\'' +
-                ", value='" + value + '\'' +
-                '}';
     }
 
     @Override
@@ -151,5 +150,14 @@ public class PiItemValue {
 
     public enum ItemValueSource {
         PI_SOURCE_SNAPSHOT, PI_SOURCE_COMP, PI_SOURCE_INTERP;
+    }
+
+    @Override
+    public String toString() {
+        return "PiItemValue{" +
+                "tag='" + tag + '\'' +
+                ", time='" + time + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

@@ -13,6 +13,8 @@ public class PiDriverCLIJCommanderTest {
     private PiDriverCliJCommander cli;
     private JCommander jc;
 
+    private static final String HOST = "192.168.0.18";
+
     @Before
     public void setUp() {
         cli = new PiDriverCliJCommander();
@@ -169,7 +171,7 @@ public class PiDriverCLIJCommanderTest {
     @Test
     public void searchValuesFull() {
         String[] args = new String[] {
-                "--pi-host", "10.0.0.106",
+                "--pi-host", HOST,
                 "--das-host", "localhost",
                 "--pi-user", "pidemo",
                 "--pi-pass", "-",
@@ -182,6 +184,26 @@ public class PiDriverCLIJCommanderTest {
                 "--limit", "100",
                 "-o", "csv",
                 "-p", "C:\\Users\\Vitor Greati\\Desktop\\PI.csv"
+        };
+        try {
+            jc.parse(args);
+            cli.execute(jc, cli);
+        } catch (ParameterException e) {
+            System.out.println(e.getMessage());
+            jc.usage();
+        }
+    }
+
+    @Test
+    public void insertValuesFromCsvTest() {
+        String[] args = new String[] {
+                "--pi-host", HOST,
+                "--das-host", "localhost",
+                "--pi-user", "pidemo",
+                "--pi-pass", "-",
+                "insert-values",
+                "-i", "csv",
+                "-f", "C:\\Users\\Vitor Greati\\Desktop\\git-repos\\psv_flow\\data\\generated\\psv\\processed\\full_test_psv_data.csv"
         };
         try {
             jc.parse(args);

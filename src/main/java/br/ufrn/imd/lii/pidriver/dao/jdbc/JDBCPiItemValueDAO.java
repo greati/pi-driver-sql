@@ -2,6 +2,7 @@ package br.ufrn.imd.lii.pidriver.dao.jdbc;
 
 import br.ufrn.imd.lii.pidriver.dao.PiItemValueDAO;
 import br.ufrn.imd.lii.pidriver.exception.DataAccessException;
+import br.ufrn.imd.lii.pidriver.model.PiItem;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
 import br.ufrn.imd.lii.pidriver.sql.PiQuery;
 import javafx.util.Pair;
@@ -50,6 +51,38 @@ public class JDBCPiItemValueDAO implements PiItemValueDAO {
             new DataAccessException();
         }
         return piItemValues;
+    }
+
+    @Override
+    public void insert(PiItemValue itemValue) throws DataAccessException {
+        String query = PiQuery.writeValueQuery(itemValue.getTag(),
+                itemValue.getTime(), itemValue.getValue());
+        try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
+            pStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException();
+        }
+    }
+
+    @Override
+    public void insert(List<PiItemValue> itemValues) throws DataAccessException {
+        int i = 0;
+        for (PiItemValue v : itemValues) {
+            i += 1;
+            insert(v);
+            if (i % 100 == 0)
+                System.out.println("Inserted: " + i);
+        }
+        /*if (itemValues.isEmpty())
+            return;
+        String query = PiQuery.writeMultipleValuesQuery(itemValues);
+        try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
+            pStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException();
+        }*/
     }
 
     @Override

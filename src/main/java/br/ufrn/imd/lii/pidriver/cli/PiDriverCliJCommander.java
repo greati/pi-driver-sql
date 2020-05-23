@@ -30,6 +30,18 @@ public class PiDriverCliJCommander {
         }
     }
 
+    public class InsertValuesInputFormatConverter implements IStringConverter<InsertValuesInputFormat> {
+        @Override
+        public InsertValuesInputFormat convert(String value) {
+            switch(value) {
+                case "csv":
+                    return InsertValuesInputFormat.CSV;
+                default:
+                    return InsertValuesInputFormat.CSV;
+            }
+        }
+    }
+
     public static class OutputFormatValidator implements IParameterValidator {
         public void validate(String name, String value) throws ParameterException {
             Set<String> possibleOutputFormats = Arrays.stream(JavaUtil.getNames(OutputFormat.class)).map(String::toLowerCase).collect(Collectors.toSet());
@@ -37,9 +49,25 @@ public class PiDriverCliJCommander {
                 throw new ParameterException("Allowed output format(s) is(are) " + String.join(", ", possibleOutputFormats));
         }
     }
+
+    public static class InsertValuesInputFormatValidator implements IParameterValidator {
+        public void validate(String name, String value) throws ParameterException {
+            Set<String> possibleOutputFormats = Arrays.stream(JavaUtil.getNames(InsertValuesInputFormat.class)).map(String::toLowerCase).collect(Collectors.toSet());
+            if (!possibleOutputFormats.contains(value))
+                throw new ParameterException("Allowed output format(s) is(are) " + String.join(", ", possibleOutputFormats));
+        }
+    }
+
     public static class FileExistenceValidator implements IParameterValidator {
         public void validate(String name, String value) throws ParameterException {
             if (!FileUtil.canWriteInFile(value))
+                throw new ParameterException("You provided an invalid file path");
+        }
+    }
+
+    public static class FileInputExistenceValidator implements IParameterValidator {
+        public void validate(String name, String value) throws ParameterException {
+            if (!FileUtil.pathExists(value))
                 throw new ParameterException("You provided an invalid file path");
         }
     }
@@ -59,6 +87,18 @@ public class PiDriverCliJCommander {
 
     @Parameter(order=4, names = CliDefs.HELP_PARAM, help = true, description = "Display command help")
     private boolean help;
+
+    @Parameters(separators = "=", commandDescription = "Insert values in PI from a source file")
+    public class InsertValuesCommand {
+
+        @Parameter(order=0, names={CliDefs.LONG_OPT_FROM_PATH, CliDefs.SHORT_OPT_FROM_PATH},
+                validateWith = FileInputExistenceValidator.class, description = CliDefs.OPT_DESC_FROM_PATH)
+        private String fromPath;
+
+        @Parameter(order=1, names={CliDefs.LONG_OPT_INPUT_FORMAT, CliDefs.SHORT_OPT_INPUT_FORMAT}, description=CliDefs.OPT_DESC_INPUT_FORMAT,
+                converter = OutputFormatConverter.class, required = false, validateWith = InsertValuesInputFormatValidator.class)
+        private InsertValuesInputFormat inputFormat = InsertValuesInputFormat.CSV;
+    }
 
     @Parameters(separators = "=", commandDescription = "Search for values in PI")
     public class SearchValuesCommand {
@@ -97,11 +137,13 @@ public class PiDriverCliJCommander {
     }
 
     public SearchValuesCommand searchValCmd = new SearchValuesCommand();
+    public InsertValuesCommand insertValCmd = new InsertValuesCommand();
 
     public JCommander getCommander(PiDriverCliJCommander cli) {
         JCommander jc = JCommander.newBuilder()
                 .addObject(cli)
                 .addCommand(CliDefs.SEARCH_VALUES_CMD, searchValCmd)
+                .addCommand(CliDefs.INSERT_VALUES_CMD, insertValCmd)
                 .build();
         return jc;
     }
@@ -151,6 +193,30 @@ public class PiDriverCliJCommander {
                     Optional maxValue = makeOptional(cli.searchValCmd.maxValue, new Pair(cli.searchValCmd.maxValue, cli.searchValCmd.maxValueClosed));
                     List<PiItemValue> items = dao.search(cli.searchValCmd.tag, initDate, endDate, limit, minValue, maxValue);
                     processItemValueOutput(items, cli.searchValCmd.output, cli.searchValCmd.outputPath);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case CliDefs.INSERT_VALUES_CMD:
+                try(PiItemValueDAO dao = new JDBCPiItemValueDAO(cli.dasHost, cli.piHost, cli.piUser, cli.piPass)) {
+                    String fromPath = cli.insertValCmd.fromPath;
+                    InsertValuesInputFormat inputFormat = cli.insertValCmd.inputFormat;
+                    System.out.println("Asked to insert values from " + fromPath);
+                    CsvPiValueWriter csvParser = new CsvPiValueWriter();
+                    List<PiItemValue> items;
+                    switch(inputFormat) {
+                        case CSV:
+                            items = csvParser.read(fromPath);
+                            break;
+                        default:
+                            items = csvParser.read(fromPath);
+                    }
+                    dao.insert(items);
+                    System.out.println("A total of " + items.size() + " values were inserted.");
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {

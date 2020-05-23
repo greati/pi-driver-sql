@@ -30,6 +30,7 @@ public class PiDriver {
     }
 
     public ResultSet executarQuery(String query) throws SQLException {
+        System.out.println(query);
         ResultSet retorno;
         PreparedStatement pStatement = null;
         Connection connection = null;
