@@ -22,16 +22,20 @@ public class LinearInterpolationDeltaStepsComputer implements DeltaStepsComputer
 
     @Override
     public Pair<Integer, Integer> computeSteps(List<PiItemValue> inBetweenValues, Integer leftIndex, Integer rightIndex) {
-        List<Pair<Integer, PiItemValue>> maxItems = ListUtils.findMaxItems(inBetweenValues, (i1, i2) -> Double.valueOf(i1.getValue()) < Double.valueOf(i2.getValue()));
-        // left part
-        Point2D.Double left = new Point2D.Double(leftIndex, Double.valueOf(allValues.get(leftIndex).getValue()));
-        Point2D.Double maxLeft = new Point2D.Double(maxItems.get(0).getValue0(), Double.valueOf(maxItems.get(0).getValue1().getValue()));
-        Integer leftSteps = getStepsByLinearInterp(left, maxLeft, normalValue);
-        // right part
-        Point2D.Double right = new Point2D.Double(rightIndex, Double.valueOf(allValues.get(rightIndex).getValue()));
-        Point2D.Double maxRight = new Point2D.Double(maxItems.get(maxItems.size() - 1).getValue0(), Double.valueOf(maxItems.get(maxItems.size() - 1).getValue1().getValue()));
-        Integer rightSteps = getStepsByLinearInterp(right, maxRight, normalValue);
-        return Pair.with(leftSteps, rightSteps);
+        List<Pair<Integer, PiItemValue>> maxItems = ListUtils.findMaxItems(inBetweenValues, (i1, i2) -> Double.valueOf(i1.getDoubleValue()) < Double.valueOf(i2.getDoubleValue()));
+        if (!maxItems.isEmpty()) {
+            // left part
+            Point2D.Double left = new Point2D.Double(leftIndex, allValues.get(leftIndex).getDoubleValue());
+            Point2D.Double maxLeft = new Point2D.Double(maxItems.get(0).getValue0(), Double.valueOf(maxItems.get(0).getValue1().getDoubleValue()));
+            Integer leftSteps = getStepsByLinearInterp(left, maxLeft, normalValue);
+            // right part
+            Point2D.Double right = new Point2D.Double(rightIndex, Double.valueOf(allValues.get(rightIndex).getDoubleValue()));
+            Point2D.Double maxRight = new Point2D.Double(maxItems.get(maxItems.size() - 1).getValue0(), Double.valueOf(maxItems.get(maxItems.size() - 1).getValue1().getDoubleValue()));
+            Integer rightSteps = getStepsByLinearInterp(right, maxRight, normalValue);
+            return Pair.with(leftSteps, rightSteps);
+        } else {
+            return Pair.with(0, 0);
+        }
     }
 
     private Integer getStepsByLinearInterp(Point2D.Double p0, Point2D.Double p1, Double normalValue) {

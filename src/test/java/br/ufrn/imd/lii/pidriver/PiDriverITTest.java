@@ -3,7 +3,7 @@ package br.ufrn.imd.lii.pidriver;
 import br.ufrn.imd.lii.pidriver.dao.jdbc.PiDriver;
 import br.ufrn.imd.lii.pidriver.sql.PiQuery;
 import br.ufrn.imd.lii.pidriver.util.PIUtil;
-import javafx.util.Pair;
+import org.javatuples.Pair;
 import org.junit.Test;
 
 import java.sql.Date;

@@ -4,14 +4,11 @@ import br.ufrn.imd.lii.pidriver.dao.PiItemValueDAO;
 import br.ufrn.imd.lii.pidriver.dao.jdbc.JDBCPiItemValueDAO;
 import br.ufrn.imd.lii.pidriver.exception.DataAccessException;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
-import javafx.util.Pair;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class JDBCPiItemValueDAOTest {
 

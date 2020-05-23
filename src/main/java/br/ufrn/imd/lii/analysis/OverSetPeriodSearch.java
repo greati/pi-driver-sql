@@ -52,7 +52,7 @@ public class OverSetPeriodSearch {
 
             // search first value above the set
             Triplet<Optional<Integer>, Integer, List<PiItemValue>> belowValues = ListUtils.collectUntil(values, currentIndex,
-                    item -> Double.valueOf(item.getValue()) < setValue);
+                    item -> item.getDoubleValue() < setValue);
 
             //-- break if not find
             if (!belowValues.getValue0().isPresent())
@@ -62,7 +62,7 @@ public class OverSetPeriodSearch {
 
             // collect all points above the set value, stopping at the first value below the set
             Triplet<Optional<Integer>, Integer, List<PiItemValue>> aboveValues = ListUtils.collectUntil(values, currentIndex,
-                    item -> Double.valueOf(item.getValue()) >= setValue);
+                    item -> item.getDoubleValue() >= setValue);
             // -- if we only keep above the set, we do not count as a period, and break
             if (!aboveValues.getValue0().isPresent())
                 break;

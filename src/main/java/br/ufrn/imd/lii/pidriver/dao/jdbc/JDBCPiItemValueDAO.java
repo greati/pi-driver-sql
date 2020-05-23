@@ -5,7 +5,7 @@ import br.ufrn.imd.lii.pidriver.exception.DataAccessException;
 import br.ufrn.imd.lii.pidriver.model.PiItem;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
 import br.ufrn.imd.lii.pidriver.sql.PiQuery;
-import javafx.util.Pair;
+import org.javatuples.Pair;
 
 import java.sql.*;
 import java.util.ArrayList;
