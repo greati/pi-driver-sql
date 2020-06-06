@@ -67,22 +67,39 @@ public class JDBCPiItemValueDAO implements PiItemValueDAO {
 
     @Override
     public void insert(List<PiItemValue> itemValues) throws DataAccessException {
-        int i = 0;
+        /*int i = 0;
         for (PiItemValue v : itemValues) {
             i += 1;
             insert(v);
-            if (i % 100 == 0)
+            if (i % 10 == 0) {
                 System.out.println("Inserted: " + i);
-        }
-        /*if (itemValues.isEmpty())
-            return;
-        String query = PiQuery.writeMultipleValuesQuery(itemValues);
-        try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
-            pStatement.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DataAccessException();
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }*/
+        if (itemValues.isEmpty())
+            return;
+        int L = 500;
+        int N = itemValues.size();
+        for (int i = 0; i < N; i += L) {
+            System.out.println("Inserted from " + i + " to " + Math.min(N, i + L - 1));
+            List<PiItemValue> subList = itemValues.subList(i, Math.min(N, i + L));
+            String query = PiQuery.writeMultipleValuesQuery(subList);
+            try (PreparedStatement pStatement = this.connection.prepareStatement(query)) {
+                pStatement.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new DataAccessException();
+            }
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

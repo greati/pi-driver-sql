@@ -130,12 +130,12 @@ public class PiDriverCLIJCommanderTest {
     @Test
     public void searchValuesTagOnly() {
         String[] args = new String[] {
-                "--pi-host", "10.0.0.106",
+                "--pi-host", HOST,
                 "--das-host", "localhost",
                 "--pi-user", "pidemo",
                 "--pi-pass", "-",
                 "search-values",
-                "--tag", "SINUSOID",
+                "--tag", "PSVTEST",
                 "-o", "csv",
                 "-p", "C:\\Users\\Vitor Greati\\Desktop\\TESTPI.csv"
         };
@@ -203,7 +203,7 @@ public class PiDriverCLIJCommanderTest {
                 "--pi-pass", "-",
                 "insert-values",
                 "-i", "csv",
-                "-f", "C:\\Users\\Vitor Greati\\Desktop\\git-repos\\psv_flow\\data\\generated\\psv\\processed\\full_test_psv_data.csv"
+                "-f", "C:\\Users\\Vitor Greati\\Desktop\\git-repos\\psv_flow\\data\\generated\\psv\\processed\\AFTERSET4.csv"
         };
         try {
             jc.parse(args);
