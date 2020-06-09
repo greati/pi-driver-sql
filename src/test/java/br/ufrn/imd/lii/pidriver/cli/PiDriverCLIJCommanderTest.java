@@ -203,7 +203,7 @@ public class PiDriverCLIJCommanderTest {
                 "--pi-pass", "-",
                 "insert-values",
                 "-i", "csv",
-                "-f", "C:\\Users\\Vitor Greati\\Desktop\\git-repos\\psv_flow\\data\\generated\\psv\\processed\\AFTERSET4.csv"
+                "-f", "C:\\Users\\Vitor Greati\\Desktop\\git-repos\\psv_flow\\data\\generated\\psv\\processed\\BEFORESET4.csv"
         };
         try {
             jc.parse(args);
