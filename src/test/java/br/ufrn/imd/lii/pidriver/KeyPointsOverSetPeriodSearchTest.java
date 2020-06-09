@@ -1,7 +1,7 @@
 package br.ufrn.imd.lii.pidriver;
 
 import br.ufrn.imd.lii.analysis.LinearInterpolationDeltaStepsComputer;
-import br.ufrn.imd.lii.analysis.OverSetPeriodSearch;
+import br.ufrn.imd.lii.analysis.KeyPointsOverSetPeriodSearch;
 import br.ufrn.imd.lii.common.Period;
 import br.ufrn.imd.lii.pidriver.format.csv.CsvPiValueWriter;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OverSetPeriodSearchTest {
+public class KeyPointsOverSetPeriodSearchTest {
 
 
     @Test
@@ -26,7 +26,7 @@ public class OverSetPeriodSearchTest {
                     .collect(Collectors.toList());
             LinearInterpolationDeltaStepsComputer deltaStepsComputer =
                     new LinearInterpolationDeltaStepsComputer(filteredItems,0.75,0.1);
-            OverSetPeriodSearch periodSearch = new OverSetPeriodSearch(deltaStepsComputer);
+            KeyPointsOverSetPeriodSearch periodSearch = new KeyPointsOverSetPeriodSearch(deltaStepsComputer);
             List<Period> periods = periodSearch.searchOverSetPeriods(
                     filteredItems,
                     0.75,
