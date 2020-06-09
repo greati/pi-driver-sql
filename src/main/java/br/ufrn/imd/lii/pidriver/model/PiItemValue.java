@@ -90,6 +90,10 @@ public class PiItemValue {
         isNullValue = nullValue;
     }
 
+    public Double getDoubleValue() {
+        return Double.valueOf(value.replace(',','.'));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

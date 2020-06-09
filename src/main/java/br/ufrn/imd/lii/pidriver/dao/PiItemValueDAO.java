@@ -2,7 +2,7 @@ package br.ufrn.imd.lii.pidriver.dao;
 
 import br.ufrn.imd.lii.pidriver.exception.DataAccessException;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
-import javafx.util.Pair;
+import org.javatuples.Pair;
 
 import java.util.Date;
 import java.util.List;
@@ -44,7 +44,7 @@ public interface PiItemValueDAO extends AutoCloseable {
     /**
      * Insert list of items in PI.
      *
-     * @param itemsValues
+     * @param itemValue
      * @throws DataAccessException
      */
     void insert(List<PiItemValue> itemValue) throws DataAccessException;

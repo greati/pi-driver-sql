@@ -6,7 +6,8 @@ import br.ufrn.imd.lii.pidriver.model.PiItemInfo;
 import br.ufrn.imd.lii.pidriver.model.PiItemInfoDigitalStates;
 import br.ufrn.imd.lii.pidriver.model.PiItemValue;
 import br.ufrn.imd.lii.pidriver.util.PIUtil;
-import javafx.util.Pair;
+import org.javatuples.Pair;
+
 
 import java.util.Arrays;
 import java.util.Date;
@@ -245,29 +246,29 @@ public class PiQuery {
         if (initDate.isPresent()) {
             builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
             builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
-            String op = initDate.get().getValue() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
-            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(initDate.get().getKey()))).append(SQL_ASPAS).append(SQL_ESPACO);
+            String op = initDate.get().getValue1() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
+            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(initDate.get().getValue0()))).append(SQL_ASPAS).append(SQL_ESPACO);
         }
 
         if (finalDate.isPresent()) {
             builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
             builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_TIME).append(SQL_ESPACO);
-            String op = finalDate.get().getValue() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
-            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(finalDate.get().getKey()))).append(SQL_ASPAS).append(SQL_ESPACO);
+            String op = finalDate.get().getValue1() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
+            builder.append(op).append(SQL_ASPAS).append((PIUtil.convertDateToString(finalDate.get().getValue0()))).append(SQL_ASPAS).append(SQL_ESPACO);
         }
 
         builder.append(SQL_ESPACO);
         if (minValue.isPresent()) {
             builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
             builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_VALUE);
-            String op = minValue.get().getValue() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
-            builder.append(op).append(minValue.get().getKey()).append(SQL_ESPACO);
+            String op = minValue.get().getValue1() ? SQL_MAIOR_IGUAL_OPERADOR : SQL_MAIOR_OPERADOR;
+            builder.append(op).append(minValue.get().getValue0()).append(SQL_ESPACO);
         }
         if (maxValue.isPresent()) {
             builder.append(SQL_AND_DECLARACAO).append(SQL_ESPACO);
             builder.append(PiJdbcDefs.PI_JDBC_COL_FULL_NAME_PICOMP2_VALUE);
-            String op = maxValue.get().getValue() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
-            builder.append(op).append(maxValue.get().getKey()).append(SQL_ESPACO);
+            String op = maxValue.get().getValue1() ? SQL_MENOR_IGUAL_OPERADOR : SQL_MENOR_OPERADOR;
+            builder.append(op).append(maxValue.get().getValue0()).append(SQL_ESPACO);
         }
         builder.append(SQL_PONTO_VIRGULA);
         return builder.toString();

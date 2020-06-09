@@ -9,7 +9,7 @@ import br.ufrn.imd.lii.pidriver.util.JavaUtil;
 import com.beust.jcommander.*;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import javafx.util.Pair;
+import org.javatuples.Pair;
 
 import java.io.IOException;
 import java.sql.SQLException;
